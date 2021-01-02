@@ -65,6 +65,7 @@ source=(${_url}/llvm-${pkgver}.src.tar.xz{,.sig}
         "0303-LLD-Ignore-ELF-tests-when-ld.lld-defaults-to-MinGW.patch"
         "0304-ignore-new-bfd-options.patch"
         "0504-fix-lldb-library-name-mingw.patch"
+        "compilertest.c"
         "native-wrapper.h"
         "windres-wrapper.c"
         "windres.LICENSE"
@@ -110,6 +111,7 @@ sha256sums=('913f68c898dfb4a03b397c5e11c6a2f39d0f22ed7665c9cefa87a34423a72469'
             '2e1705274dfc55466cc8977e61d569a685e18ce07895cbec2ccf3b848eafd8ee'
             '778e0db0a5b0657ab05e2a81d83241347a4a41af2b0f9903422f651fa58e8d40'
             'bed7ae642486a8fd0db5afb0b9afcd8a87605de318ad891bf4c9378a2eb09dc2'
+            '8bd20ac94646806aec6dadb9325218718d1ba8abc039da6abc9aa8159658671d'
             'c9758342cb926605cd1b30ccb92e6b47f5cc930a15904462e0445959f9be49c1'
             '343b311e77959c026b2aa3fd92b3f2c6002ea8a9d1d5d240e3d3ad93ad27e5a7'
             '07368fd2805f45f706a5f63051e161989e97bd150731ee88976a04edd8546d54')
@@ -190,8 +192,20 @@ build() {
     extra_config+=(-DCMAKE_BUILD_TYPE=Release)
   fi
 
+  local -a platform_config
+  if [[ "${CARCH}" == "armv7" || "${CARCH}" == "aarch64" ]]; then
+      platform_config+=(-DCOMPILER_RT_BUILD_MEMPROF=OFF)
+      platform_config+=(-DCOMPILER_RT_BUILD_XRAY=OFF)
+  fi
+
   export PATH="/opt/${MINGW_CHOST}/bin:$PATH"
   export CC='clang' CXX='clang++' AS="clang" AR="llvm-ar" RANLIB="llvm-ranlib" DLLTOOL="llvm-dlltool"
+
+  $CC $CFLAGS $LDFLAGS ../compilertest.c -o compilertest.exe
+  if ! ./compilertest.exe; then
+    platform_config+=(-DCLANG_TABLEGEN=/usr/bin/clang-tblgen.exe)
+    platform_config+=(-DLLVM_TABLEGEN=/usr/bin/llvm-tblgen.exe)
+  fi
 
   # A bit hacky but it works
   _clang_links="clang++;clang-cpp;as;c++;cc;cpp;g++;gcc;${MINGW_CHOST}-cc;${MINGW_CHOST}-c++;${MINGW_CHOST}-clang;${MINGW_CHOST}-clang++;${MINGW_CHOST}-g++;${MINGW_CHOST}-gcc"
@@ -218,11 +232,13 @@ build() {
     -DLLVM_ENABLE_LLD=ON \
     -DLLVM_ENABLE_PROJECTS="clang;compiler-rt;lld" \
     -DLLVM_ENABLE_THREADS=ON \
+    -DLLVM_HOST_TRIPLE="${MINGW_CHOST}" \
     -DLLVM_INCLUDE_EXAMPLES=OFF \
     -DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
     -DLLVM_LINK_LLVM_DYLIB=ON \
     -DPython3_FIND_REGISTRY=NEVER \
     -DPython3_ROOT_DIR=${MINGW_PREFIX} \
+    "${platform_config[@]}" \
     "${extra_config[@]}" \
     ../llvm-${pkgver}.src
 
@@ -257,6 +273,7 @@ build() {
     -DLIBUNWIND_USE_COMPILER_RT=ON
     -DLLVM_ENABLE_LLD=ON
     -DLLVM_ENABLE_PROJECTS="libcxx;libcxxabi;libunwind"
+    -DLLVM_HOST_TRIPLE="${MINGW_CHOST}"
     -DPython3_FIND_REGISTRY=NEVER
     -DPython3_ROOT_DIR=${MINGW_PREFIX})
 
@@ -335,7 +352,7 @@ package_compiler-rt() {
   ${_make_cmd} -C ../build-${CARCH}/projects/compiler-rt DESTDIR="${pkgdir}" install
 }
 
-package_libcxx() {
+package_libc++() {
   pkgdesc="C++ Standard Library (mingw-w64)"
   url="https://libcxx.llvm.org/"
   provides=("${MINGW_PACKAGE_PREFIX}-gcc-libs")
@@ -397,81 +414,13 @@ package_llvm() {
   install -Dm644 ../windres.LICENSE "${pkgdir}${MINGW_PREFIX}/share/licenses/windres/LICENSE"
 }
 
-# Wrappers
-package_mingw-w64-clang-i686-clang(){
-  package_clang
-}
+# template start; name=mingw-w64-splitpkg-wrappers; version=1.0;
+# vim: set ft=bash :
 
-package_mingw-w64-clang-i686-compiler-rt(){
-  package_compiler-rt
-}
-
-package_mingw-w64-clang-i686-libc++(){
-  package_libcxx
-}
-
-package_mingw-w64-clang-i686-openmp(){
-  package_openmp
-}
-
-package_mingw-w64-clang-i686-lld(){
-  package_lld
-}
-package_mingw-w64-clang-i686-libunwind(){
-  package_libunwind
-}
-
-package_mingw-w64-clang-i686-llvm(){
-  package_llvm
-}
-
-package_mingw-w64-clang-x86_64-clang(){
-  package_clang
-}
-
-package_mingw-w64-clang-x86_64-compiler-rt(){
-  package_compiler-rt
-}
-
-package_mingw-w64-clang-x86_64-libc++(){
-  package_libcxx
-}
-
-package_mingw-w64-clang-x86_64-lld(){
-  package_lld
-}
-
-package_mingw-w64-clang-x86_64-libunwind(){
-  package_libunwind
-}
-
-package_mingw-w64-clang-x86_64-llvm(){
-  package_llvm
-}
-
-package_mingw-w64-i686-clang(){
-  package_clang
-}
-
-package_mingw-w64-i686-compiler-rt(){
-  package_compiler-rt
-}
-
-package_mingw-w64-i686-libc++(){
-  package_libcxx
-}
-
-package_mingw-w64-i686-openmp(){
-  package_openmp
-}
-
-package_mingw-w64-i686-lld(){
-  package_lld
-}
-package_mingw-w64-i686-libunwind(){
-  package_libunwind
-}
-
-package_mingw-w64-i686-llvm(){
-  package_llvm
-}
+# generate wrappers
+for _name in "${pkgname[@]}"; do
+  _short="package_${_name#${MINGW_PACKAGE_PREFIX}-}"
+  _func="$(declare -f "${_short}")"
+  eval "${_func/#${_short}/package_${_name}}"
+done
+# template end;
