@@ -390,54 +390,54 @@ package_llvm() {
 }
 
 # Wrappers
-package_clang-mingw-w64-i686-clang(){
+package_mingw-w64-clang-i686-clang(){
   package_clang
 }
 
-package_clang-mingw-w64-i686-compiler-rt(){
+package_mingw-w64-clang-i686-compiler-rt(){
   package_compiler-rt
 }
 
-package_clang-mingw-w64-i686-libc++(){
+package_mingw-w64-clang-i686-libc++(){
   package_libcxx
 }
 
-package_clang-mingw-w64-i686-openmp(){
+package_mingw-w64-clang-i686-openmp(){
   package_openmp
 }
 
-package_clang-mingw-w64-i686-lld(){
+package_mingw-w64-clang-i686-lld(){
   package_lld
 }
-package_clang-mingw-w64-i686-libunwind(){
+package_mingw-w64-clang-i686-libunwind(){
   package_libunwind
 }
 
-package_clang-mingw-w64-i686-llvm(){
+package_mingw-w64-clang-i686-llvm(){
   package_llvm
 }
 
-package_clang-mingw-w64-x86_64-clang(){
+package_mingw-w64-clang-x86_64-clang(){
   package_clang
 }
 
-package_clang-mingw-w64-x86_64-compiler-rt(){
+package_mingw-w64-clang-x86_64-compiler-rt(){
   package_compiler-rt
 }
 
-package_clang-mingw-w64-x86_64-libc++(){
+package_mingw-w64-clang-x86_64-libc++(){
   package_libcxx
 }
 
-package_clang-mingw-w64-x86_64-lld(){
+package_mingw-w64-clang-x86_64-lld(){
   package_lld
 }
 
-package_clang-mingw-w64-x86_64-libunwind(){
+package_mingw-w64-clang-x86_64-libunwind(){
   package_libunwind
 }
 
-package_clang-mingw-w64-x86_64-llvm(){
+package_mingw-w64-clang-x86_64-llvm(){
   package_llvm
 }
 

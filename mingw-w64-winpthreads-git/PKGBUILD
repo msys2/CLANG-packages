@@ -118,20 +118,20 @@ package_libwinpthread() {
 # Wrappers for package functions
 
 # 32-bit wrappers
-package_clang-mingw-w64-i686-winpthreads-git() {
+package_mingw-w64-clang-i686-winpthreads-git() {
   package_winpthreads
 }
 
-package_clang-mingw-w64-i686-libwinpthread-git() {
+package_mingw-w64-clang-i686-libwinpthread-git() {
   package_libwinpthread
 }
 
 # 64-bit wrappers
-package_clang-mingw-w64-x86_64-winpthreads-git() {
+package_mingw-w64-clang-x86_64-winpthreads-git() {
   package_winpthreads
 }
 
-package_clang-mingw-w64-x86_64-libwinpthread-git() {
+package_mingw-w64-clang-x86_64-libwinpthread-git() {
   package_libwinpthread
 }
 
