@@ -294,7 +294,7 @@ build() {
   [[ -d build-windres-${CARCH} ]] && rm -rf build-windres-${CARCH}
   mkdir build-windres-${CARCH} && cd build-windres-${CARCH}
 
-  $CC $CFLAGS $LDFLAGS ../windres-wrapper.c -o llvm-windres.exe
+  $CC $CFLAGS $LDFLAGS -DDEFAULT_TARGET=\"${MINGW_CHOST}\" ../windres-wrapper.c -o llvm-windres.exe
 }
 
 check() {
@@ -384,60 +384,61 @@ package_llvm() {
   local PREFIX_WIN=$(cygpath -wm ${MINGW_PREFIX})
   sed -e "s|${PREFIX_WIN}|${MINGW_PREFIX}|g" -i ${pkgdir}/${MINGW_PREFIX}/lib/cmake/llvm/LLVMExports.cmake
 
-  install -Dm644 "${srcdir}/build-windres-${CARCH}/llvm-windres.exe" "${pkgdir}${MINGW_PREFIX}/bin/llvm-windres.exe"
-  install -Dm644 "${srcdir}/build-windres-${CARCH}/llvm-windres.exe" "${pkgdir}${MINGW_PREFIX}/bin/windres.exe"
+  install -Dm755 "${srcdir}/build-windres-${CARCH}/llvm-windres.exe" "${pkgdir}${MINGW_PREFIX}/bin/llvm-windres.exe"
+  install -Dm755 "${srcdir}/build-windres-${CARCH}/llvm-windres.exe" "${pkgdir}${MINGW_PREFIX}/bin/${MINGW_CHOST}-windres.exe"
+  install -Dm755 "${srcdir}/build-windres-${CARCH}/llvm-windres.exe" "${pkgdir}${MINGW_PREFIX}/bin/windres.exe"
   install -Dm644 ../windres.LICENSE "${pkgdir}${MINGW_PREFIX}/share/licenses/windres/LICENSE"
 }
 
 # Wrappers
-package_clang-mingw-w64-i686-clang(){
+package_mingw-w64-clang-i686-clang(){
   package_clang
 }
 
-package_clang-mingw-w64-i686-compiler-rt(){
+package_mingw-w64-clang-i686-compiler-rt(){
   package_compiler-rt
 }
 
-package_clang-mingw-w64-i686-libc++(){
+package_mingw-w64-clang-i686-libc++(){
   package_libcxx
 }
 
-package_clang-mingw-w64-i686-openmp(){
+package_mingw-w64-clang-i686-openmp(){
   package_openmp
 }
 
-package_clang-mingw-w64-i686-lld(){
+package_mingw-w64-clang-i686-lld(){
   package_lld
 }
-package_clang-mingw-w64-i686-libunwind(){
+package_mingw-w64-clang-i686-libunwind(){
   package_libunwind
 }
 
-package_clang-mingw-w64-i686-llvm(){
+package_mingw-w64-clang-i686-llvm(){
   package_llvm
 }
 
-package_clang-mingw-w64-x86_64-clang(){
+package_mingw-w64-clang-x86_64-clang(){
   package_clang
 }
 
-package_clang-mingw-w64-x86_64-compiler-rt(){
+package_mingw-w64-clang-x86_64-compiler-rt(){
   package_compiler-rt
 }
 
-package_clang-mingw-w64-x86_64-libc++(){
+package_mingw-w64-clang-x86_64-libc++(){
   package_libcxx
 }
 
-package_clang-mingw-w64-x86_64-lld(){
+package_mingw-w64-clang-x86_64-lld(){
   package_lld
 }
 
-package_clang-mingw-w64-x86_64-libunwind(){
+package_mingw-w64-clang-x86_64-libunwind(){
   package_libunwind
 }
 
-package_clang-mingw-w64-x86_64-llvm(){
+package_mingw-w64-clang-x86_64-llvm(){
   package_llvm
 }
 
