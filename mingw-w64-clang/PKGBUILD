@@ -33,7 +33,6 @@ arch=('any')
 url="https://llvm.org/"
 license=("custom:Apache 2.0 with LLVM Exception")
 groups=("${MINGW_PACKAGE_PREFIX}-toolchain")
-provides=("${MINGW_PACKAGE_PREFIX}-gcc")
 makedepends=(
             "cmake"
              "tar"
@@ -318,6 +317,7 @@ package_clang() {
   depends=("${MINGW_PACKAGE_PREFIX}-compiler-rt=${pkgver}-${pkgrel}"
            "${MINGW_PACKAGE_PREFIX}-lld=${pkgver}-${pkgrel}"
            "${MINGW_PACKAGE_PREFIX}-llvm=${pkgver}-${pkgrel}")
+  provides=("${MINGW_PACKAGE_PREFIX}-gcc")
 
   cd "${srcdir}/clang"
   ${_make_cmd} -C ../build-${CARCH}/tools/clang DESTDIR="${pkgdir}" install
@@ -363,6 +363,7 @@ package_lld() {
   pkgdesc="Linker tools for LLVM (mingw-w64)"
   url="https://lld.llvm.org/"
   depends=("${MINGW_PACKAGE_PREFIX}-llvm=${pkgver}-${pkgrel}")
+  provides=("${MINGW_PACKAGE_PREFIX}-binutils")
 
   cd "${srcdir}/lld"
   ${_make_cmd} -C ../build-${CARCH}/tools/lld DESTDIR="${pkgdir}" install
