@@ -1,0 +1,71 @@
+name: main
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: [
+          { msystem: CLANG64, arch: x86_64, can-fail: false },
+          { msystem: CLANG32, arch: i686, can-fail: false },
+          #{ msystem: CLANGARM64, arch: aarch64, can-fail: true },
+        ]
+    name: ${{ matrix.msystem }}
+    steps:
+
+      - uses: actions/checkout@v2
+        with:
+          path: temp
+          fetch-depth: 0
+
+      # to match the autobuild environment
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MSYS
+          install: git msys2-devel base-devel binutils clang lld mingw-w64-cross-clang mingw-w64-cross-clang-headers
+          update: true
+
+      - name: Add staging repo
+        shell: msys2 {0}
+        run: |
+          sed -i '1s|^|[staging]\nServer = https://repo.msys2.org/staging/\nSigLevel = Never\n|' /etc/pacman.conf
+
+      - name: Update using staging
+        run: |
+          msys2 -c 'pacman --noconfirm -Suuy'
+          msys2 -c 'pacman --noconfirm -Suu'
+
+      - name: Move Checkout
+        run: |
+          Copy-Item -Path ".\temp" -Destination "C:\_" -Recurse
+
+      - name: CI-Build
+        shell: msys2 {0}
+        continue-on-error: ${{ matrix.can-fail }}
+        run: |
+          cd /C/_
+          MINGW_ARCH=${{ matrix.msystem }} ./.ci/ci-build.sh
+
+      - name: "Upload binaries"
+        uses: actions/upload-artifact@v2
+        continue-on-error: ${{ matrix.can-fail }}
+        with:
+          name: ${{ matrix.msystem }}-packages
+          path: C:/_/artifacts/*.pkg.tar.*
+
+      - name: "Upload sources"
+        if:  ${{ matrix.msystem == 'CLANG64' }}
+        uses: actions/upload-artifact@v2
+        continue-on-error: ${{ matrix.can-fail }}
+        with:
+          name: sources
+          path: C:/_/artifacts/*.src.tar.*
