@@ -10,7 +10,7 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 # Configure
 source "$DIR/ci-library.sh"
-mkdir artifacts
+mkdir {packages,sources}
 git_config user.email 'ci@msys2.org'
 git_config user.name  'MSYS2 Continuous Integration'
 #git remote add upstream 'https://github.com/MSYS2/CLANG-packages'
@@ -55,11 +55,16 @@ for package in "${packages[@]}"; do
     cd - > /dev/null
     echo "::endgroup::"
 
-    mv "${package}"/*.pkg.tar.* artifacts
-    mv "${package}"/*.src.tar.* artifacts
+    mv "${package}"/*.pkg.tar.* packages
+    mv "${package}"/${package}*.src.tar.* sources
     unset package
 done
-success 'All packages built successfully'
 
-cd artifacts
+cd packages
+echo "::group::Create repo"
+repo-add "${MINGW_ARCH,,}.db.tar.xz" *.pkg.tar.*
+echo "::endgroup::"
+
 execute 'SHA-256 checksums' sha256sum *
+
+success 'All packages built successfully'
