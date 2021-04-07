@@ -3,11 +3,12 @@
 _realname=crt
 pkgbase=mingw-w64-${_realname}-git
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}-git"
-pkgver=9.0.0.6029.ecb4ff54
+pkgver=9.0.0.6154.e37b315b
 pkgrel=1
-_commit='ecb4ff5498dfedd6abcbadb889b84fab19ee57b2'
+_commit='e37b315bc039a10507c5cb1046d6b891506022be'
 pkgdesc='MinGW-w64 CRT for Windows'
 arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64')
 url='https://mingw-w64.sourceforge.io/'
 license=('custom')
 groups=("${MINGW_PACKAGE_PREFIX}-toolchain")
@@ -44,6 +45,7 @@ build() {
   export CC='clang' CXX='clang++' AS="clang" AR="llvm-ar" RANLIB="llvm-ranlib" DLLTOOL="llvm-dlltool" LD='ld.lld'
 
   msg "Building ${MINGW_CHOST} CRT"
+  local _crt_configure_args
   case "$CARCH" in
     i686)
       _crt_configure_args="--disable-lib64 --enable-lib32"
@@ -51,7 +53,18 @@ build() {
     x86_64)
       _crt_configure_args="--disable-lib32 --enable-lib64"
     ;;
+    armv7)
+      _crt_configure_args="--disable-lib32 --disable-lib64 --enable-libarm32"
+    ;;
+    aarch64)
+      _crt_configure_args="--disable-lib32 --disable-lib64 --disable-libarm32 --enable-libarm64"
+    ;;
   esac
+
+  local _default_msvcrt=msvcrt
+  if [[ $MINGW_PACKAGE_PREFIX == *-clang-* ]] || [[ $MINGW_PACKAGE_PREFIX == *-ucrt-* ]]; then
+    _default_msvcrt=ucrt
+  fi
 
   [[ -d ${srcdir}/crt-${MINGW_CHOST} ]] && rm -rf ${srcdir}/crt-${MINGW_CHOST}
   mkdir -p ${srcdir}/crt-${MINGW_CHOST} && cd ${srcdir}/crt-${MINGW_CHOST}
@@ -61,7 +74,7 @@ build() {
     --host=${MINGW_CHOST} \
     --target=${MINGW_CHOST} \
     --with-sysroot=${MINGW_PREFIX}/${MINGW_CHOST} \
-    --with-default-msvcrt=ucrt \
+    --with-default-msvcrt=${_default_msvcrt} \
     --enable-wildcard \
     ${_crt_configure_args}
   make
