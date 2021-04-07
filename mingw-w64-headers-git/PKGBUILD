@@ -4,10 +4,11 @@ _realname=headers
 pkgbase=mingw-w64-${_realname}-git
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}-git"
 pkgdesc="MinGW-w64 headers for Windows"
-pkgver=9.0.0.6029.ecb4ff54
+pkgver=9.0.0.6154.e37b315b
 pkgrel=1
-_commit='ecb4ff5498dfedd6abcbadb889b84fab19ee57b2'
+_commit='e37b315bc039a10507c5cb1046d6b891506022be'
 arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64')
 url="https://mingw-w64.sourceforge.io/"
 license=('custom')
 groups=("${MINGW_PACKAGE_PREFIX}-toolchain")
@@ -36,8 +37,6 @@ prepare() {
   git am --committer-date-is-author-date "${srcdir}/0001-Allow-to-use-bessel-and-complex-functions-without-un.patch"
   git am --committer-date-is-author-date "${srcdir}/0002-DirectX-9-fixes-for-VLC.patch"
 
-
-
   cd ${srcdir}/mingw-w64/mingw-w64-headers
   touch include/windows.*.h include/wincrypt.h include/prsht.h
 }
@@ -45,6 +44,21 @@ prepare() {
 build() {
   export PATH="/opt/${MINGW_CHOST}/bin:$PATH"
   export CC='clang' CXX='clang++' AS="clang" AR="llvm-ar" RANLIB="llvm-ranlib" DLLTOOL="llvm-dlltool" LD='ld.lld'
+  local _default_win32_winnt
+  case "${CARCH}" in
+    i686|x86_64)
+      _default_win32_winnt=0x601
+      ;;
+    *)
+      # assume any new arches added will be at least Win10
+      _default_win32_winnt=0xA00
+      ;;
+  esac
+
+  local _default_msvcrt=msvcrt
+  if [[ $MINGW_PACKAGE_PREFIX == *-clang-* ]] || [[ $MINGW_PACKAGE_PREFIX == *-ucrt-* ]]; then
+    _default_msvcrt=ucrt
+  fi
 
   msg "Configuring ${MINGW_CHOST} headers"
   [[ -d ${srcdir}/headers-${MINGW_CHOST} ]] && rm -rf ${srcdir}/headers-${MINGW_CHOST}
@@ -55,8 +69,8 @@ build() {
     --target=${MINGW_CHOST} \
     --prefix=${MINGW_PREFIX}/${MINGW_CHOST} \
     --enable-sdk=all \
-    --with-default-win32-winnt=0x601 \
-    --with-default-msvcrt=ucrt \
+    --with-default-win32-winnt=${_default_win32_winnt} \
+    --with-default-msvcrt=${_default_msvcrt} \
     --enable-idl \
     --without-widl
 }
