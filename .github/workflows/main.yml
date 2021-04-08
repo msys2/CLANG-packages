@@ -13,9 +13,10 @@ jobs:
         include: [
           { msystem: CLANG64, arch: x86_64, can-fail: false },
           { msystem: CLANG32, arch: i686, can-fail: false },
-          #{ msystem: CLANGARM64, arch: aarch64, can-fail: true },
+          { msystem: CLANGARM64, arch: aarch64, can-fail: true },
         ]
     name: ${{ matrix.msystem }}
+    continue-on-error: ${{ matrix.can-fail }}
     steps:
 
       - uses: actions/checkout@v2
@@ -50,14 +51,12 @@ jobs:
 
       - name: CI-Build
         shell: msys2 {0}
-        continue-on-error: ${{ matrix.can-fail }}
         run: |
           cd /C/_
           MINGW_ARCH=${{ matrix.msystem }} ./.ci/ci-build.sh
 
       - name: "Upload binaries"
         uses: actions/upload-artifact@v2
-        continue-on-error: ${{ matrix.can-fail }}
         with:
           name: ${{ matrix.msystem }}-packages
           path: C:/_/packages/*
@@ -65,7 +64,6 @@ jobs:
       - name: "Upload sources"
         if:  ${{ matrix.msystem == 'CLANG64' }}
         uses: actions/upload-artifact@v2
-        continue-on-error: ${{ matrix.can-fail }}
         with:
           name: sources
           path: C:/_/sources/*
@@ -76,11 +74,12 @@ jobs:
       fail-fast: false
       matrix:
         include: [
-          { tagname: clang64, artifact: CLANG64-packages },
-          { tagname: clang32, artifact: CLANG32-packages },
-          #{ tagname: clangarm64, artifact: CLANGARM64-packages, can-fail: true },
-          { tagname: sources, artifact: sources },
+          { tagname: clang64, artifact: CLANG64-packages, can-fail: false },
+          { tagname: clang32, artifact: CLANG32-packages, can-fail: false },
+          { tagname: clangarm64, artifact: CLANGARM64-packages, can-fail: true },
+          { tagname: sources, artifact: sources, can-fail: false },
         ]
+    continue-on-error: ${{ matrix.can-fail }}
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') }}
     steps:
       - uses: actions/download-artifact@v2
