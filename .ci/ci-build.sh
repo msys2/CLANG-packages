@@ -27,7 +27,11 @@ pacman --noconfirm -Fy
 #test -z "${packages}" && success 'No changes in package recipes'
 #define_build_order || failure 'Could not determine build order'
 
-packages=(mingw-w64-clang mingw-w64-libmangle-git mingw-w64-tools-git mingw-w64-headers-git mingw-w64-crt-git mingw-w64-winpthreads-git)
+declare -a packages
+packages=(mingw-w64-clang)
+if [[ $MINGW_ARCH != *ARM* ]]; then
+  packages+=(mingw-w64-libmangle-git mingw-w64-tools-git mingw-w64-headers-git mingw-w64-crt-git mingw-w64-winpthreads-git)
+fi
 
 # Build
 message 'Building packages' "${packages[@]}"
