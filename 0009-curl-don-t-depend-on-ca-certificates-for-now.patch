@@ -1,0 +1,24 @@
+From 90bdf9ad0a44ba95e8e44506a07a3b31367ea10a Mon Sep 17 00:00:00 2001
+From: Jeremy Drake <github@jdrake.com>
+Date: Thu, 8 Apr 2021 13:20:37 -0700
+Subject: [PATCH 09/11] curl: don't depend on ca-certificates for now
+
+---
+ mingw-w64-curl/PKGBUILD | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/mingw-w64-curl/PKGBUILD b/mingw-w64-curl/PKGBUILD
+index ac7f21cd6..3cdf5d65c 100644
+--- a/mingw-w64-curl/PKGBUILD
++++ b/mingw-w64-curl/PKGBUILD
+@@ -32,7 +32,6 @@ depends=("${MINGW_PACKAGE_PREFIX}-gcc-libs"
+          "${MINGW_PACKAGE_PREFIX}-zlib"
+          "${MINGW_PACKAGE_PREFIX}-zstd"
+          $([[ "$_variant" == "-openssl" ]] && echo \
+-            "${MINGW_PACKAGE_PREFIX}-ca-certificates" \
+             "${MINGW_PACKAGE_PREFIX}-openssl" \
+             "${MINGW_PACKAGE_PREFIX}-nghttp2")
+          $([[ "$_variant" == "-gnutls" ]] && echo \
+-- 
+2.31.1.windows.1
+

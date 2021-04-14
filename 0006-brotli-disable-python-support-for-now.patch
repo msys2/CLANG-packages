@@ -1,0 +1,62 @@
+From 2677e2cddc1e99cd23c0306360dc7f33a1ca27ac Mon Sep 17 00:00:00 2001
+From: Jeremy Drake <github@jdrake.com>
+Date: Fri, 8 Jan 2021 12:48:44 -0800
+Subject: [PATCH 06/11] brotli: disable python support for now
+
+also use make instead of ninja
+---
+ mingw-w64-brotli/PKGBUILD | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/mingw-w64-brotli/PKGBUILD b/mingw-w64-brotli/PKGBUILD
+index 775895e9f..df73fb599 100644
+--- a/mingw-w64-brotli/PKGBUILD
++++ b/mingw-w64-brotli/PKGBUILD
+@@ -3,7 +3,7 @@
+ _realname=brotli
+ pkgbase=mingw-w64-${_realname}
+ pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}"
+-         "${MINGW_PACKAGE_PREFIX}-python-${_realname}"
++         #"${MINGW_PACKAGE_PREFIX}-python-${_realname}"
+          "${MINGW_PACKAGE_PREFIX}-brotli-testdata")
+ pkgver=1.0.9
+ pkgrel=2
+@@ -11,9 +11,9 @@ pkgdesc="Brotli compression library (mingw-w64)"
+ arch=('any')
+ mingw_arch=('mingw32' 'mingw64' 'ucrt64')
+ url='https://github.com/google/brotli'
+-makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
+-             "${MINGW_PACKAGE_PREFIX}-ninja"
+-             "${MINGW_PACKAGE_PREFIX}-python")
++makedepends=("${MINGW_PACKAGE_PREFIX}-cmake")
++             #"${MINGW_PACKAGE_PREFIX}-ninja"
++             #"${MINGW_PACKAGE_PREFIX}-python")
+ license=('MIT')
+ source=("${_realname}-${pkgver}.tar.gz"::"https://github.com/google/brotli/archive/v${pkgver}.tar.gz"
+         09b0992b6acb7faa6fd3b23f9bc036ea117230fc.patch)
+@@ -26,10 +26,10 @@ prepare() {
+ }
+ 
+ build() {
+-  cd "${srcdir}/${_realname}-${pkgver}"
++  #cd "${srcdir}/${_realname}-${pkgver}"
+ 
+-  MSYS2_ARG_CONV_EXCL="--prefix=;--install-scripts=;--install-platlib=" \
+-    ${MINGW_PREFIX}/bin/python setup.py build
++  #MSYS2_ARG_CONV_EXCL="--prefix=;--install-scripts=;--install-platlib=" \
++  #  ${MINGW_PREFIX}/bin/python setup.py build
+ 
+   [[ -d "${srcdir}"/build-${CARCH} ]] && rm -rf "${srcdir}"/build-${CARCH}
+   mkdir -p "${srcdir}"/build-${CARCH} && cd "${srcdir}"/build-${CARCH}
+@@ -43,7 +43,7 @@ build() {
+ 
+   MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=" \
+     ${MINGW_PREFIX}/bin/cmake \
+-      -GNinja \
++      -G"MSYS Makefiles" \
+       -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
+       "${extra_config[@]}" \
+       -DBUILD_{SHARED,STATIC}_LIBS=ON \
+-- 
+2.31.1.windows.1
+

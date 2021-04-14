@@ -1,0 +1,25 @@
+From ed2fdd66fe8d7221f7c87f186c93f449f6a5ed04 Mon Sep 17 00:00:00 2001
+From: Jeremy Drake <github@jdrake.com>
+Date: Fri, 8 Jan 2021 10:36:19 -0800
+Subject: [PATCH 04/11] openssl: break circular depends with ca-certificates
+
+---
+ mingw-w64-openssl/PKGBUILD | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mingw-w64-openssl/PKGBUILD b/mingw-w64-openssl/PKGBUILD
+index 2640bb8f2..a5492e977 100644
+--- a/mingw-w64-openssl/PKGBUILD
++++ b/mingw-w64-openssl/PKGBUILD
+@@ -10,7 +10,7 @@ pkgrel=2
+ arch=('any')
+ mingw_arch=('mingw32' 'mingw64' 'ucrt64')
+ pkgdesc="The Open Source toolkit for Secure Sockets Layer and Transport Layer Security (mingw-w64)"
+-depends=("${MINGW_PACKAGE_PREFIX}-ca-certificates" "${MINGW_PACKAGE_PREFIX}-gcc-libs" "${MINGW_PACKAGE_PREFIX}-zlib")
++depends=("${MINGW_PACKAGE_PREFIX}-gcc-libs" "${MINGW_PACKAGE_PREFIX}-zlib")
+ makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+ options=('strip' '!buildflags' 'staticlibs')
+ license=('custom:BSD')
+-- 
+2.31.1.windows.1
+

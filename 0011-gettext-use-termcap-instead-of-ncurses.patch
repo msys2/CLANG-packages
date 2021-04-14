@@ -1,0 +1,28 @@
+From 50bf915076533c313efeb2d2b8ab4a47d14285f3 Mon Sep 17 00:00:00 2001
+From: Jeremy Drake <github@jdrake.com>
+Date: Thu, 7 Jan 2021 16:13:46 -0800
+Subject: [PATCH 11/11] gettext: use termcap instead of ncurses
+
+---
+ mingw-w64-gettext/PKGBUILD | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mingw-w64-gettext/PKGBUILD b/mingw-w64-gettext/PKGBUILD
+index 8c439754d..eade8616e 100644
+--- a/mingw-w64-gettext/PKGBUILD
++++ b/mingw-w64-gettext/PKGBUILD
+@@ -12,9 +12,9 @@ pkgdesc="GNU internationalization library (mingw-w64)"
+ depends=("${MINGW_PACKAGE_PREFIX}-expat"
+          "${MINGW_PACKAGE_PREFIX}-gcc-libs"
+          "${MINGW_PACKAGE_PREFIX}-libiconv"
+-         #"${MINGW_PACKAGE_PREFIX}-termcap"
++         "${MINGW_PACKAGE_PREFIX}-termcap"
+         )
+-makedepends=("${MINGW_PACKAGE_PREFIX}-gcc" "${MINGW_PACKAGE_PREFIX}-ncurses" "git")
++makedepends=("${MINGW_PACKAGE_PREFIX}-gcc" "git")
+ options=('strip' 'staticlibs')
+ 
+ # GPL3 for the package as a whole and LGPL for some parts, see the license files
+-- 
+2.31.1.windows.1
+
