@@ -213,6 +213,14 @@ jobs:
           cd /C/_
           ${WORKSPACE}/build_bootstrap.sh 2
 
+      - name: Create repo
+        shell: msys2 {0}
+        env:
+          MSYSTEM: ${{ matrix.msystem }}
+        run: |
+          cd /C/_/packages
+          repo-add ${MSYSTEM,,}.db.tar.xz *.pkg.tar.*
+
       - name: "Upload binaries"
         uses: actions/upload-artifact@v2
         with:
