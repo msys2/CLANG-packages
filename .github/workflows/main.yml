@@ -70,11 +70,17 @@ jobs:
           git config --global user.email 'ci@msys2.org'
           git am --committer-date-is-author-date ${WORKSPACE}/00*.patch
 
+      - name: Apply pending clang fixes
+        shell: msys2 {0}
+        run: |
+          WORKSPACE="$(pwd)"
+          cd /C/_
+          git am --committer-date-is-author-date ${WORKSPACE}/01*.patch
+
       - name: Workaround PLY cert issue
         shell: cmd
         run: |
-          C:
-          cd \_\mingw-w64-python-ply
+          cd /D C:\_\mingw-w64-python-ply
           curl -LO "https://www.dabeaz.com/ply/ply-3.11.tar.gz"
 
       - name: Build bootstrap
