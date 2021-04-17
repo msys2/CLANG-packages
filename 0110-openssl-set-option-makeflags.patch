@@ -1,0 +1,26 @@
+From 167237b50ef25059b9272ea29d3d5d8d0084b712 Mon Sep 17 00:00:00 2001
+From: Jeremy Drake <github@jdrake.com>
+Date: Wed, 14 Apr 2021 19:04:25 -0700
+Subject: [PATCH] openssl: set option !makeflags
+
+Getting a new linker error on i686.
+---
+ mingw-w64-openssl/PKGBUILD | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mingw-w64-openssl/PKGBUILD b/mingw-w64-openssl/PKGBUILD
+index 2640bb8f2..1fd90a4f5 100644
+--- a/mingw-w64-openssl/PKGBUILD
++++ b/mingw-w64-openssl/PKGBUILD
+@@ -12,7 +12,7 @@ mingw_arch=('mingw32' 'mingw64' 'ucrt64')
+ pkgdesc="The Open Source toolkit for Secure Sockets Layer and Transport Layer Security (mingw-w64)"
+ depends=("${MINGW_PACKAGE_PREFIX}-ca-certificates" "${MINGW_PACKAGE_PREFIX}-gcc-libs" "${MINGW_PACKAGE_PREFIX}-zlib")
+ makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+-options=('strip' '!buildflags' 'staticlibs')
++options=('strip' '!buildflags' '!makeflags' 'staticlibs')
+ license=('custom:BSD')
+ url="https://www.openssl.org"
+ noextract=(${_realname}-${_ver}.tar.gz)
+-- 
+2.31.1.windows.1
+

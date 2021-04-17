@@ -1,0 +1,26 @@
+From fc2f861f8cadf0b5c01f9f59fd2390a1590790f6 Mon Sep 17 00:00:00 2001
+From: Jeremy Drake <github@jdrake.com>
+Date: Sat, 17 Apr 2021 10:44:01 -0700
+Subject: [PATCH] python: disable makeflags
+
+See if it helps #34 (not holding my breath).
+---
+ mingw-w64-python/PKGBUILD | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mingw-w64-python/PKGBUILD b/mingw-w64-python/PKGBUILD
+index 553bd9e45..d50d8fdff 100644
+--- a/mingw-w64-python/PKGBUILD
++++ b/mingw-w64-python/PKGBUILD
+@@ -41,7 +41,7 @@ depends=("${MINGW_PACKAGE_PREFIX}-gcc-libs"
+          "${MINGW_PACKAGE_PREFIX}-zlib"
+          "${MINGW_PACKAGE_PREFIX}-xz")
+ makedepends=("${MINGW_PACKAGE_PREFIX}-gcc" "${MINGW_PACKAGE_PREFIX}-pkg-config" "autoconf-archive")
+-options=('makeflags') # 'debug' '!strip' )
++options=('!makeflags') # 'debug' '!strip' )
+ source=("https://www.python.org/ftp/python/${pkgver%rc?}/Python-${pkgver}.tar.xz"
+         0000-make-_sysconfigdata.py-relocatable.patch
+         0001-fix-_nt_quote_args-using-subprocess-list2cmdline.patch
+-- 
+2.31.1.windows.1
+
