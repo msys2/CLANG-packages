@@ -8,7 +8,7 @@ on:
         default: msys2/CLANG-packages
       previous_stage_branch:
         required: true
-        default: bootstrap
+        default: bootstrap-stage2
 
 jobs:
   build1:
@@ -49,7 +49,7 @@ jobs:
         run: |
           sed -i '1s|^|[staging]\nServer = https://repo.msys2.org/staging/\nSigLevel = Never\n|' /etc/pacman.conf
 
-      - name: Add stage1 bootstrap repo
+      - name: Add stage2 bootstrap repo
         shell: msys2 {0}
         run: |
           sed -i '1s|^|[${{ matrix.repo }}]\nServer = https://github.com/${{ github.event.inputs.previous_stage_repo }}/releases/download/${{ github.event.inputs.previous_stage_branch }}-${{ matrix.repo }}/\nSigLevel = Never\n|' /etc/pacman.conf
@@ -59,29 +59,22 @@ jobs:
           msys2 -c 'pacman --noconfirm -Suuy'
           msys2 -c 'pacman --noconfirm -Suu'
 
-      - name: Install stage1 bootstrap packages
+      - name: Install stage2 bootstrap toolchain
         shell: msys2 {0}
         run: |
-          pacman --noconfirm --noprogressbar -S $(pacman -Sqs mingw-w64-clang-${{ matrix.arch }}-*)
+          pacman --noconfirm --noprogressbar -S mingw-w64-clang-${{ matrix.arch }}-toolchain
 
       - name: Move Checkout
         run: |
           Copy-Item -Path ".\temp" -Destination "C:\_" -Recurse
-
-      - name: Apply bootstrap patches
-        shell: msys2 {0}
-        run: |
-          WORKSPACE="$(pwd)"
-          cd /C/_
-          git config --global user.name 'MSYS2 Continuous Integration'
-          git config --global user.email 'ci@msys2.org'
-          git am --committer-date-is-author-date ${WORKSPACE}/00*.patch
 
       - name: Apply pending clang fixes
         shell: msys2 {0}
         run: |
           WORKSPACE="$(pwd)"
           cd /C/_
+          git config --global user.name 'MSYS2 Continuous Integration'
+          git config --global user.email 'ci@msys2.org'
           git am --committer-date-is-author-date -3 ${WORKSPACE}/01*.patch
 
       - name: Workaround PLY cert issue
@@ -163,7 +156,7 @@ jobs:
         run: |
           sed -i '1s|^|[staging]\nServer = https://repo.msys2.org/staging/\nSigLevel = Never\n|' /etc/pacman.conf
 
-      - name: Add stage1 bootstrap repo
+      - name: Add stage2 bootstrap repo
         shell: msys2 {0}
         run: |
           sed -i '1s|^|[${{ matrix.repo }}]\nServer = https://github.com/${{ github.event.inputs.previous_stage_repo }}/releases/download/${{ github.event.inputs.previous_stage_branch }}-${{ matrix.repo }}/\nSigLevel = Never\n|' /etc/pacman.conf
@@ -173,29 +166,22 @@ jobs:
           msys2 -c 'pacman --noconfirm -Suuy'
           msys2 -c 'pacman --noconfirm -Suu'
 
-      - name: Install stage1 bootstrap packages
+      - name: Install stage2 bootstrap toolchain
         shell: msys2 {0}
         run: |
-          pacman --noconfirm --noprogressbar -S $(pacman -Sqs mingw-w64-clang-${{ matrix.arch }}-*)
+          pacman --noconfirm --noprogressbar -S mingw-w64-clang-${{ matrix.arch }}-toolchain
 
       - name: Move Checkout
         run: |
           Copy-Item -Path ".\temp" -Destination "C:\_" -Recurse
-
-      - name: Apply bootstrap patches
-        shell: msys2 {0}
-        run: |
-          WORKSPACE="$(pwd)"
-          cd /C/_
-          git config --global user.name 'MSYS2 Continuous Integration'
-          git config --global user.email 'ci@msys2.org'
-          git am --committer-date-is-author-date ${WORKSPACE}/00*.patch
 
       - name: Apply pending clang fixes
         shell: msys2 {0}
         run: |
           WORKSPACE="$(pwd)"
           cd /C/_
+          git config --global user.name 'MSYS2 Continuous Integration'
+          git config --global user.email 'ci@msys2.org'
           git am --committer-date-is-author-date -3 ${WORKSPACE}/01*.patch
 
       - name: Workaround PLY cert issue

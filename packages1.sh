@@ -1,6 +1,12 @@
 #!/bin/bash -x
 
-pkgs=(ntldd-git
+pkgs=(libmangle-git
+      tools-git
+      headers-git
+      crt-git
+      winpthreads-git
+      winstorecompat-git
+      ntldd-git
       termcap
       libiconv
       pkgconf
@@ -12,7 +18,6 @@ pkgs=(ntldd-git
       lz4
       libuv
       rhash
-      cmake
       zstd
       libtre-git
       libsystre
@@ -33,6 +38,7 @@ pkgs=(ntldd-git
       jemalloc
       nghttp2
       curl
+      cmake
       libffi
       mpdecimal
       readline
@@ -77,6 +83,7 @@ pkgs=(ntldd-git
       python-asn1crypto
       python-toml
       python-semantic-version
+      $( true || [[ $MSYSTEM == *ARM* ]] || echo "python-setuptools-rust" )
       python-cryptography
       python-pyopenssl
       python-ndg-httpsclient
