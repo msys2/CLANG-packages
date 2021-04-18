@@ -100,6 +100,18 @@ jobs:
           mkdir packages sources
           ${WORKSPACE}/build_bootstrap.sh 1
 
+      - name: Workaround filename issues
+        shell: msys2 {0}
+        env:
+          MSYSTEM: ${{ matrix.msystem }}
+        run: |
+          shopt -s nullglob
+          cd /C/_/packages
+          # work around github issue with ~ in file name (turns into .)
+          for a in *~*; do
+            mv "$a" "`tr '~' '.' <<<"$a"`"
+          done
+
       - name: "Upload binaries"
         uses: actions/upload-artifact@v2
         with:
@@ -225,7 +237,12 @@ jobs:
         env:
           MSYSTEM: ${{ matrix.msystem }}
         run: |
+          shopt -s nullglob
           cd /C/_/packages
+          # work around github issue with ~ in file name (turns into .)
+          for a in *~*; do
+            mv "$a" "`tr '~' '.' <<<"$a"`"
+          done
           repo-add ${MSYSTEM,,}.db.tar.xz *.pkg.tar.*
 
       - name: "Upload binaries"
