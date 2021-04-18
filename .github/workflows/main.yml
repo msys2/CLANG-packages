@@ -2,6 +2,13 @@ name: main
 
 on:
   workflow_dispatch:
+    inputs:
+      previous_stage_repo:
+        required: true
+        default: msys2/CLANG-packages
+      previous_stage_branch:
+        required: true
+        default: bootstrap
 
 jobs:
   build1:
@@ -45,7 +52,7 @@ jobs:
       - name: Add stage1 bootstrap repo
         shell: msys2 {0}
         run: |
-          sed -i '1s|^|[${{ matrix.repo }}]\nServer = https://github.com/msys2/CLANG-packages/releases/download/bootstrap-${{ matrix.repo }}/\nSigLevel = Never\n|' /etc/pacman.conf
+          sed -i '1s|^|[${{ matrix.repo }}]\nServer = https://github.com/${{ github.event.inputs.previous_stage_repo }}/releases/download/${{ github.event.inputs.previous_stage_branch }}-${{ matrix.repo }}/\nSigLevel = Never\n|' /etc/pacman.conf
 
       - name: Update using staging
         run: |
@@ -147,7 +154,7 @@ jobs:
       - name: Add stage1 bootstrap repo
         shell: msys2 {0}
         run: |
-          sed -i '1s|^|[${{ matrix.repo }}]\nServer = https://github.com/msys2/CLANG-packages/releases/download/bootstrap-${{ matrix.repo }}/\nSigLevel = Never\n|' /etc/pacman.conf
+          sed -i '1s|^|[${{ matrix.repo }}]\nServer = https://github.com/${{ github.event.inputs.previous_stage_repo }}/releases/download/${{ github.event.inputs.previous_stage_branch }}-${{ matrix.repo }}/\nSigLevel = Never\n|' /etc/pacman.conf
 
       - name: Update using staging
         run: |
