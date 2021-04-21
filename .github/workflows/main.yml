@@ -1,4 +1,4 @@
-name: stage2
+name: stage3
 
 on:
   workflow_dispatch:
