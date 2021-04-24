@@ -260,6 +260,8 @@ jobs:
   publish:
     needs: [ build2 ]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
