@@ -75,7 +75,7 @@ jobs:
           cd /C/_
           git config --global user.name 'MSYS2 Continuous Integration'
           git config --global user.email 'ci@msys2.org'
-          git am --committer-date-is-author-date ${WORKSPACE}/00*.patch
+          git am --committer-date-is-author-date -3 ${WORKSPACE}/00*.patch
 
       - name: Apply pending clang fixes
         shell: msys2 {0}
@@ -189,7 +189,7 @@ jobs:
           cd /C/_
           git config --global user.name 'MSYS2 Continuous Integration'
           git config --global user.email 'ci@msys2.org'
-          git am --committer-date-is-author-date ${WORKSPACE}/00*.patch
+          git am --committer-date-is-author-date -3 ${WORKSPACE}/00*.patch
 
       - name: Apply pending clang fixes
         shell: msys2 {0}
