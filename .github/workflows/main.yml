@@ -1,8 +1,8 @@
 name: main
 
 on:
-  push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -82,7 +82,7 @@ jobs:
           { tagname: sources, artifact: sources, can-fail: false },
         ]
     continue-on-error: ${{ matrix.can-fail }}
-    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') }}
+    if: ${{ github.event_name == 'workflow_dispatch' && startsWith(github.ref, 'refs/heads/') }}
     steps:
       - uses: actions/download-artifact@v2
         with:
