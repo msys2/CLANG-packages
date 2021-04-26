@@ -56,7 +56,7 @@ jobs:
 
       - name: Update using staging
         run: |
-          msys2 -c 'pacman --noconfirm -Suuy'
+          msys2 -c 'pacman --noconfirm -Suuyy'
           msys2 -c 'pacman --noconfirm -Suu'
 
       - name: Install stage1 bootstrap packages
@@ -83,12 +83,6 @@ jobs:
           WORKSPACE="$(pwd)"
           cd /C/_
           git am --committer-date-is-author-date -3 ${WORKSPACE}/01*.patch
-
-      - name: Workaround PLY cert issue
-        shell: cmd
-        run: |
-          cd /D C:\_\mingw-w64-python-ply
-          curl -LO "https://www.dabeaz.com/ply/ply-3.11.tar.gz"
 
       - name: Build bootstrap
         shell: msys2 {0}
@@ -170,7 +164,7 @@ jobs:
 
       - name: Update using staging
         run: |
-          msys2 -c 'pacman --noconfirm -Suuy'
+          msys2 -c 'pacman --noconfirm -Suuyy'
           msys2 -c 'pacman --noconfirm -Suu'
 
       - name: Install stage1 bootstrap packages
@@ -197,12 +191,6 @@ jobs:
           WORKSPACE="$(pwd)"
           cd /C/_
           git am --committer-date-is-author-date -3 ${WORKSPACE}/01*.patch
-
-      - name: Workaround PLY cert issue
-        shell: cmd
-        run: |
-          cd /D C:\_\mingw-w64-python-ply
-          curl -LO "https://www.dabeaz.com/ply/ply-3.11.tar.gz"
 
       - name: "Download binaries"
         uses: actions/download-artifact@v2
