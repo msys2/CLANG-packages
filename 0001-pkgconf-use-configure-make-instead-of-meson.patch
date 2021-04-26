@@ -1,16 +1,16 @@
-From d90e47185f869fd1e19d1ebc678ebcf8e567e510 Mon Sep 17 00:00:00 2001
+From 57da561c431eecc9de49635fef9123b26f2ed8b5 Mon Sep 17 00:00:00 2001
 From: Jeremy Drake <github@jdrake.com>
 Date: Thu, 7 Jan 2021 10:33:46 -0800
-Subject: [PATCH 01/11] pkgconf: use configure/make instead of meson
+Subject: [PATCH] pkgconf: use configure/make instead of meson
 
 This package is needed near the root of the dependency tree, long before
 meson and ninja can be built.
 ---
- mingw-w64-pkgconf/PKGBUILD | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ mingw-w64-pkgconf/PKGBUILD | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
 diff --git a/mingw-w64-pkgconf/PKGBUILD b/mingw-w64-pkgconf/PKGBUILD
-index 6bbb9f86b..53dd507d5 100644
+index 0c685e154..d346bf796 100644
 --- a/mingw-w64-pkgconf/PKGBUILD
 +++ b/mingw-w64-pkgconf/PKGBUILD
 @@ -14,9 +14,7 @@ options=('!debug' 'strip')
@@ -22,9 +22,17 @@ index 6bbb9f86b..53dd507d5 100644
 -             "${MINGW_PACKAGE_PREFIX}-ninja")
 +makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
  groups=("${MINGW_PACKAGE_PREFIX}-toolchain")
- source=(https://distfiles.dereferenced.org/pkgconf/$_realname-$pkgver.tar.gz
-         0001-meson-write-pc-file.patch
-@@ -53,20 +51,16 @@ build() {
+ source=("https://github.com/pkgconf/pkgconf/archive/refs/tags/$_realname-$pkgver.tar.gz"
+         0001-fix-prefix-dirsep.patch
+@@ -41,6 +39,7 @@ prepare() {
+ 
+   patch -p1 -i ${srcdir}/0002-size-t-format.patch
+   patch -p1 -i ${srcdir}/0003-printf-format.patch
++  autoreconf -fiv
+ }
+ 
+ build() {
+@@ -48,20 +47,16 @@ build() {
    mkdir ${srcdir}/build-${MINGW_CHOST}
    cd ${srcdir}/build-${MINGW_CHOST}
  
