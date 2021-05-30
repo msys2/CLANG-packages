@@ -32,7 +32,7 @@ jobs:
       - uses: msys2/setup-msys2@v2
         with:
           msystem: MSYS
-          install: git msys2-devel base-devel binutils clang lld mingw-w64-cross-clang mingw-w64-cross-clang-headers
+          install: git msys2-devel base-devel pactoys-git binutils clang lld mingw-w64-cross-clang mingw-w64-cross-clang-headers
           update: true
 
       - name: Add staging repo
